@@ -1,0 +1,19 @@
+# modules
+node_modules
+
+# builds
+*build*
+dist
+
+# configs
+*config*
+webpack
+
+# generated global
+global.d.ts
+
+# misc
+postinstall
+
+# generated
+api-*

@@ -1,0 +1,242 @@
+openapi: 3.0.3
+
+info:
+  title: KC Web backend API
+  description: Test project for API documentation and codegen
+  version: 1.0.0
+  contact:
+    name: Andres Garcia
+    email: andres-gr@users.noreply.github.com
+
+servers:
+  - url: http://localhost:4000/api/v1
+    description: Testing v1 API
+
+tags:
+  - name: Users
+    description: User management
+
+  - name: Projects
+    description: Project management
+
+components:
+  parameters:
+    todoId:
+      in: path
+      name: id
+      required: true
+      description: Todo ID value
+      schema:
+        type: string
+
+  requestBodies:
+    TodoBody:
+      description: Todo text content
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TodoContent'
+
+  schemas:
+    BaseResponse:
+      type: string
+      example: Response message
+
+    User:
+      type: object
+      required:
+        - id
+        - image
+        - name
+        - places
+      properties:
+        id:
+          type: string
+          description: Unique ID for the user
+          example: 1023kljlasdfja0
+        image:
+          type: string
+          description: Profile image url for the user
+          example: http://image.stock.com/images/profile/1
+        name:
+          type: string
+          example: John Smiff
+        places:
+          type: integer
+          description: Number of places shared
+          example: 3
+
+    GetUserResponse:
+      type: object
+      properties:
+        message:
+          $ref: '#/components/schemas/BaseResponse'
+        user:
+          $ref: '#/components/schemas/User'
+
+    Project:
+      type: object
+      required:
+        - id
+        - company
+        - author
+      properties:
+        id:
+          type: string
+          example: 37014kdjasf01
+        company:
+          type: string
+          example: Funahus LLC
+        author:
+          type: string
+          example: John Smiff
+
+    GetProjectResponse:
+      type: object
+      properties:
+        message:
+          $ref: '#/components/schemas/BaseResponse'
+        project:
+          $ref: '#/components/schemas/Project'
+
+    Todo:
+      type: object
+      required:
+        - id
+        - text
+      properties:
+        id:
+          type: string
+          example: id_1234qwert
+        text:
+          type: string
+          example: Todo text content
+
+    TodoContent:
+      type: object
+      properties:
+        text:
+          type: string
+          example: A new todo text content
+
+    GetTodosResponse:
+      type: object
+      properties:
+        message:
+          $ref: '#/components/schemas/BaseResponse'
+        todos:
+          type: array
+          items:
+            $ref: '#/components/schemas/Todo'
+
+    PostTodoResponse:
+      type: object
+      properties:
+        message:
+          $ref: '#/components/schemas/BaseResponse'
+        todo:
+          $ref: '#/components/schemas/Todo'
+
+    PatchTodoResponse:
+      type: object
+      properties:
+        message:
+          $ref: '#/components/schemas/BaseResponse'
+        todo:
+          $ref: '#/components/schemas/Todo'
+
+    DeleteTodoResponse:
+      type: object
+      properties:
+        message:
+          $ref: '#/components/schemas/BaseResponse'
+        todo:
+          $ref: '#/components/schemas/Todo'
+
+paths:
+  /user:
+    get:
+      description: Get a random user info
+      summary: Get a random user info
+      tags:
+        - Users
+      responses:
+        200:
+          description: A random user object
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetUserResponse'
+
+  /project:
+    get:
+      description: Get a random project info
+      summary: Get a random project info
+      tags:
+        - Projects
+      responses:
+        200:
+          description: A random project object
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetProjectResponse'
+
+  /todos:
+    get:
+      description: Get all todos
+      summary: Get all todos
+      tags:
+        - Todos
+      responses:
+        200:
+          description: Returns all todos
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTodosResponse'
+    post:
+      description: Submit a new todo
+      summary: Submit a new todo
+      tags:
+        - Todos
+      requestBody:
+        $ref: '#/components/requestBodies/TodoBody'
+      responses:
+        201:
+          description: Added a new todo successfully
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostTodoResponse'
+
+  /todos/{id}:
+    parameters:
+      - $ref: '#/components/parameters/todoId'
+    patch:
+      description: Update todo with selected ID
+      summary: Update todo with selected ID
+      tags:
+        - Todos
+      requestBody:
+        $ref: '#/components/requestBodies/TodoBody'
+      responses:
+        200:
+          description: Updated todo with selected ID successfully
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PatchTodoResponse'
+    delete:
+      description: Delete todo with selected ID
+      summary: Delete todo with selected ID
+      tags:
+        - Todos
+      responses:
+        200:
+          description: Delete todo with selected ID successfully
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteTodoResponse'

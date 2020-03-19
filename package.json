@@ -1,0 +1,38 @@
+{
+  "name": "kc-web-mono",
+  "version": "1.0.0",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "environments/*"
+  ],
+  "scripts": {
+    "start:backend": "yarn workspace backend start",
+    "start:frontend": "yarn workspace frontend start",
+    "start": "run-p start:backend start:frontend",
+    "build:backend": "yarn workspace backend build",
+    "build:frontend": "yarn workspace frontend build",
+    "build": "run-s build:frontend build:backend",
+    "serve": "yarn workspace backend serve",
+    "prod": "run-s build serve",
+    "clean:backend": "yarn workspace backend clean",
+    "generate-types:backend": "yarn workspace backend generate-types",
+    "generate-types:frontend": "yarn workspace frontend generate-types",
+    "generate-all": "run-s generate-types:backend generate-types:frontend",
+    "lint:backend": "yarn workspace backend lint",
+    "lint:frontend": "yarn workspace frontend lint",
+    "lint:all": "run-s lint:backend lint:frontend",
+    "fix:husky": "yarn remove -W husky && yarn add -WD husky"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.2",
+    "husky": "^4.2.3",
+    "npm-run-all": "^4.1.5"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn lint:all",
+      "pre-push": "yarn lint:all"
+    }
+  }
+}

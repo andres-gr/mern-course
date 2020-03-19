@@ -1,0 +1,67 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "./src",
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "jsx": "react",
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ES6",
+      "ScriptHost"
+    ],
+    "module": "esnext",
+    "moduleResolution": "node",
+    "noEmit": true,
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "paths": {
+      "Api/*": [
+        "./api/*"
+      ],
+      "Axios/*": [
+        "./api-v1/*"
+      ],
+      "Components/*": [
+        "./components/*"
+      ],
+      "Hooks/*": [
+        "./hooks/*"
+      ],
+      "Layouts/*": [
+        "./layouts/*"
+      ],
+      "Pages/*": [
+        "./pages/*"
+      ],
+      "Static/*": [
+        "./static/*"
+      ],
+      "Styles/*": [
+        "./styles/*"
+      ],
+      "Utils/*": [
+        "./utils/*"
+      ],
+      "react-dom": [
+        "@hot-loader/react-dom"
+      ]
+    },
+    "resolveJsonModule": true,
+    "rootDir": "./src",
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "ESNext"
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
