@@ -13,6 +13,14 @@ body {
   margin: 0;
 }
 
+#app-root {
+  z-index: 0;
+}
+
+#app-portal {
+  z-index: 999999;
+}
+
 .slide-in-left-enter {
   transform: translateX(-100%);
 }

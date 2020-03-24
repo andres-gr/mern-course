@@ -19,6 +19,12 @@ tags:
   - name: Projects
     description: Project management
 
+  - name: Todos
+    description: Todo management
+
+  - name: Places
+    description: Place management
+
 components:
   parameters:
     todoId:
@@ -153,6 +159,56 @@ components:
           $ref: '#/components/schemas/BaseResponse'
         todo:
           $ref: '#/components/schemas/Todo'
+
+    Place:
+      type: object
+      required:
+        - id
+        - image
+        - title
+        - address
+        - userId
+        - location
+      properties:
+        id:
+          type: string
+          description: Unique ID for the place item
+          example: 1847kjdsasdfk
+        image:
+          type: string
+          description: Image url
+          example: http://image.stock.com/images/place/1
+        title:
+          type: string
+          description: Title of the place
+          example: This is the place
+        description:
+          type: string
+          description: Additional info of the place
+          example: Image meta description
+        address:
+          type: string
+          description: Corresponding address of the location
+          example: The description info of the image
+        userId:
+          type: string
+          description: ID of the user that created the place
+          example: 1023kljlasdfja0
+        location:
+          type: object
+          description: Object containing the coordinates of the place
+          required:
+            - lat
+            - lng
+          properties:
+            lat:
+              type: number
+              description: Latitude of the place
+              example: -21.0309383
+            lng:
+              type: number
+              description: Longitude of the place
+              example: 23.0182198
 
 paths:
   /user:

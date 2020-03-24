@@ -6,10 +6,11 @@ import {
   Route,
   Switch,
 } from 'react-router-dom'
+import Main from 'Styles/Main'
 import Navbar from 'Components/Navbar'
 import Users from 'Pages/Users'
+import Places from 'Pages/Places'
 import NewPlace from 'Pages/Places/NewPlace'
-import Main from 'Styles/Main'
 
 const App: FC = () => (
   <BrowserRouter>
@@ -21,6 +22,12 @@ const App: FC = () => (
           path="/"
         >
           <Users />
+        </Route>
+        <Route
+          exact
+          path="/:userId/places"
+        >
+          <Places />
         </Route>
         <Route
           exact

@@ -1,7 +1,12 @@
-import React from 'react'
+import React, {
+  FC, useCallback, useState,
+} from 'react'
 import { Link } from 'react-router-dom'
 import styled from '@emotion/styled'
+import Backdrop from 'Components/Backdrop'
+import SideDrawer from './SideDrawer'
 import Header from './Header'
+import Links from './Links'
 
 const Button = styled.button`
   background: transparent;
@@ -35,20 +40,59 @@ const Title = styled.h1`
   }
 `
 
-const Navbar = () => (
-  <Header>
-    <Button type="button">
-      <span />
-      <span />
-      <span />
-    </Button>
-    <Title>
-      <Link to="/">
-        Places App
-      </Link>
-    </Title>
-    <nav>...</nav>
-  </Header>
-)
+const Nav = styled.nav`
+  display: none;
+
+  @media (min-width: 768px) {
+    display: block;
+  }
+`
+
+const SideNav = styled.nav`
+  height: 100%;
+`
+
+const Navbar: FC = () => {
+  const [
+    open,
+    setOpen,
+  ] = useState(false)
+
+  const handleDrawerClose = useCallback(() => setOpen(false), [])
+
+  const handleDrawerOpen = () => setOpen(true)
+
+  return (
+    <>
+      { open && <Backdrop onClick={ handleDrawerClose } /> }
+      <SideDrawer
+        show={ open }
+        onClick={ handleDrawerClose }
+      >
+        <SideNav>
+          <Links />
+        </SideNav>
+      </SideDrawer>
+      <Header>
+        <Button
+          type="button"
+          onClick={ handleDrawerOpen }
+        >
+          <span />
+          <span />
+          <span />
+        </Button>
+        <Title>
+          <Link to="/">
+            Places App
+          </Link>
+        </Title>
+        <Nav>
+          <Links />
+        </Nav>
+      </Header>
+    </>
+  )
+}
 
 export default Navbar

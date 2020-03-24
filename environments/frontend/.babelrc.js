@@ -20,6 +20,13 @@ module.exports = {
       },
     ],
     '@babel/preset-react',
+    [
+      '@emotion/babel-preset-css-prop',
+      {
+        autoLabel: true,
+        labelFormat: '[local]'
+      },
+    ],
   ],
   plugins: [
     '@babel/plugin-proposal-optional-chaining',
@@ -43,7 +50,6 @@ module.exports = {
         ],
       },
     ],
-    'emotion',
     'react-hot-loader/babel',
   ],
 };
