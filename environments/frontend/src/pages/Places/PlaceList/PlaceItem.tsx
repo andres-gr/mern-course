@@ -4,11 +4,12 @@ import React, {
   useState,
 } from 'react'
 import styled from '@emotion/styled'
+import { css } from '@emotion/core'
 import { Place } from 'Axios/api'
 import Card from 'Components/Card'
 import Button from 'Components/Button'
 import Modal from 'Components/Modal'
-import { css } from '@emotion/core'
+import Map from 'Components/Map'
 
 const Item = styled.li`
   margin: 1rem 0;
@@ -49,7 +50,7 @@ const ItemActions = styled.div`
   border-top: 1px solid #ccc;
   padding: 1rem;
   text-align: center;
- 
+
   a,
   button {
     margin: 0.5rem;
@@ -57,7 +58,7 @@ const ItemActions = styled.div`
 `
 
 const MapContainer = styled.div`
-  height: 20rem;
+  height: 15rem;
   width: 100%;
 `
 
@@ -74,6 +75,7 @@ const PlaceItem: FC<Place> = ({
   description,
   id,
   image,
+  location,
   title,
 }) => {
   const [
@@ -102,7 +104,15 @@ const PlaceItem: FC<Place> = ({
         show={ showMap }
       >
         <MapContainer>
-          <span>Map</span>
+          <Map
+            center={
+              {
+                lat : location.lat,
+                lon : location.lng,
+              }
+            }
+            zoom={ 16 }
+          />
         </MapContainer>
       </Modal>
       <Item>

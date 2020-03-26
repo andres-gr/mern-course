@@ -60,6 +60,11 @@ const config = ({
       safe: false,
       systemvars: true,
     }),
+    new Dotenv({
+      path: path.join(rootPath, '.env.maps'),
+      safe: false,
+      systemvars: true,
+    })
   ],
   module: {
     rules: [

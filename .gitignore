@@ -26,3 +26,6 @@ yarn-debug.log*
 
 # generated
 api-*/
+
+# envs
+.env.maps

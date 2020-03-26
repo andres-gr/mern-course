@@ -23,13 +23,15 @@ const Modal: FC<ModalProps> = ({
   ...rest
 }) => {
   const backdropProps = useTransition(show, null, {
+    config : { duration: 200 },
     enter  : { opacity: 1 },
     from   : { opacity: 0 },
     leave  : { opacity: 0 },
   })
 
   const overlayProps = useTransition(show, null, {
-    enter: {
+    config : { duration: 200 },
+    enter  : {
       opacity   : 1,
       transform : 'translateY(0)',
     },
