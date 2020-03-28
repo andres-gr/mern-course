@@ -17,6 +17,11 @@ export type Impossible<K extends keyof any> = {
 
 export type NoExtraProperties<T, U extends T = T> = U & Impossible<Exclude<keyof U, keyof T>>
 
+export interface ReducerAction<T, U> {
+  type: T
+  payload?: U
+}
+
 export type ZustandActions<S, A> = (set: ZustandNamedSet<S>, get: GetState<S>) => A
 
 export type ZustandMiddleware<S> = (config: ZustandStateCreator<S>) => ZustandStateCreator<S>

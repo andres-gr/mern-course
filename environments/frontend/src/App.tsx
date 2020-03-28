@@ -11,6 +11,7 @@ import Navbar from 'Components/Navbar'
 import Users from 'Pages/Users'
 import Places from 'Pages/Places'
 import NewPlace from 'Pages/Places/NewPlace'
+import UpdatePlace from 'Pages/Places/UpdatePlace'
 
 const App: FC = () => (
   <BrowserRouter>
@@ -34,6 +35,12 @@ const App: FC = () => (
           path="/places/new"
         >
           <NewPlace />
+        </Route>
+        <Route
+          exact
+          path="/places/:placeId"
+        >
+          <UpdatePlace />
         </Route>
         <Redirect to="/" />
       </Switch>
