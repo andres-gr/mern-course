@@ -2,6 +2,7 @@ import React, { FC } from 'react'
 import styled from '@emotion/styled'
 import { Place } from 'Axios/api'
 import Card from 'Components/Card'
+import Button from 'Components/Button'
 import PlaceItem from './PlaceItem'
 
 interface PlaceListProps {
@@ -22,9 +23,12 @@ const PlaceList: FC<PlaceListProps> = ({ items }) => {
       <List className="center">
         <Card>
           <h2>No places found. Create one?</h2>
-          <button type="button">
+          <Button
+            to="/places/new"
+            type="button"
+          >
             Share Place
-          </button>
+          </Button>
         </Card>
       </List>
     )

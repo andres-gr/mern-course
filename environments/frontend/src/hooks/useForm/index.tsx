@@ -12,6 +12,7 @@ import {
 
 type UseForm = (props?: FormState | (() => FormState | undefined)) => {
   handleInput: (props: SubmitProps) => void
+  handleUpdate: (props: FormState) => void
   state: FormState
 }
 
@@ -32,7 +33,7 @@ const useForm: UseForm = props => {
           ...initState.inputs,
           ...inputs,
         },
-        isValid: formIsValid!,
+        isValid: !!formIsValid,
       }
     }
     return initState
@@ -53,8 +54,22 @@ const useForm: UseForm = props => {
     })
   }, [])
 
+  const handleUpdate = useCallback<(props: FormState) => void>(({
+    inputs: updateInputs,
+    isValid,
+  }) => {
+    dispatch({
+      payload: {
+        inputs: updateInputs,
+        isValid,
+      },
+      type: FormTypes.UPDATE,
+    })
+  }, [])
+
   return {
     handleInput,
+    handleUpdate,
     state,
   }
 }

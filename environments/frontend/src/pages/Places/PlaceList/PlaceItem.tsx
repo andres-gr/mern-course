@@ -1,6 +1,7 @@
 import React, {
   FC,
   useCallback,
+  useContext,
   useState,
 } from 'react'
 import styled from '@emotion/styled'
@@ -10,6 +11,7 @@ import Card from 'Components/Card'
 import Button from 'Components/Button'
 import Modal from 'Components/Modal'
 import Map from 'Components/Map'
+import AuthContext from 'Api/context/auth'
 
 const Item = styled.li`
   margin: 1rem 0;
@@ -78,19 +80,52 @@ const PlaceItem: FC<Place> = ({
   location,
   title,
 }) => {
+  const auth = useContext(AuthContext)
+
   const [
     showMap,
     setShowMap,
+  ] = useState(false)
+
+  const [
+    showDelete,
+    setShowDelete,
   ] = useState(false)
 
   const handleShowMap = useCallback(() => setShowMap(true), [])
 
   const handleHideMap = useCallback(() => setShowMap(false), [])
 
+  const handleShowDelete = useCallback(() => setShowDelete(true), [])
+
+  const handleHideDelete = useCallback(() => setShowDelete(false), [])
+
+  const handleDelete = () => {
+    console.log('delete... this...')
+    handleHideDelete()
+  }
+
   const footer = (
     <Button onClick={ handleHideMap }>
       CLOSE
     </Button>
+  )
+
+  const deleteFooter = (
+    <>
+      <Button
+        inverse
+        onClick={ handleHideDelete }
+      >
+        CANCEL
+      </Button>
+      <Button
+        danger
+        onClick={ handleDelete }
+      >
+        DELETE
+      </Button>
+    </>
   )
 
   return (
@@ -115,6 +150,21 @@ const PlaceItem: FC<Place> = ({
           />
         </MapContainer>
       </Modal>
+      {
+        auth.isLogin && (
+          <Modal
+            footer={ deleteFooter }
+            footerCSS={ footerCSS }
+            handleCloseModal={ handleHideDelete }
+            header="Are you sure?"
+            show={ showDelete }
+          >
+            <p>
+              Do you want to delete this?
+            </p>
+          </Modal>
+        )
+      }
       <Item>
         <ItemCard>
           <ItemImage>
@@ -135,12 +185,21 @@ const PlaceItem: FC<Place> = ({
             >
               VIEW ON MAP
             </Button>
-            <Button to={ `/places/${id}` }>
-              EDIT
-            </Button>
-            <Button danger>
-              DELETE
-            </Button>
+            {
+              auth.isLogin && (
+                <>
+                  <Button to={ `/places/${id}` }>
+                    EDIT
+                  </Button>
+                  <Button
+                    danger
+                    onClick={ handleShowDelete }
+                  >
+                    DELETE
+                  </Button>
+                </>
+              )
+            }
           </ItemActions>
         </ItemCard>
       </Item>

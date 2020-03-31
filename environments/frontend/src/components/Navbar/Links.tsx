@@ -1,6 +1,8 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import styled from '@emotion/styled'
 import { NavLink } from 'react-router-dom'
+import AuthContext from 'Api/context/auth'
+import Button from 'Components/Button'
 
 const List = styled.ul`
   align-items: center;
@@ -79,32 +81,57 @@ const List = styled.ul`
   }
 `
 
-const Links = () => (
-  <List>
-    <li>
-      <NavLink
-        exact
-        to="/"
-      >
-        ALL USERS
-      </NavLink>
-    </li>
-    <li>
-      <NavLink to="/user_1/places">
-        MY PLACES
-      </NavLink>
-    </li>
-    <li>
-      <NavLink to="/places/new">
-        ADD PLACE
-      </NavLink>
-    </li>
-    <li>
-      <NavLink to="/auth">
-        AUTHENTICATE
-      </NavLink>
-    </li>
-  </List>
-)
+const Links = () => {
+  const auth = useContext(AuthContext)
+
+  return (
+    <List>
+      <li>
+        <NavLink
+          exact
+          to="/"
+        >
+          ALL USERS
+        </NavLink>
+      </li>
+      {
+        auth.isLogin && (
+          <>
+            <li>
+              <NavLink to="/user_3/places">
+                MY PLACES
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/places/new">
+                ADD PLACE
+              </NavLink>
+            </li>
+          </>
+        )
+      }
+      {
+        !auth.isLogin
+          ? (
+            <li>
+              <NavLink to="/auth">
+                AUTHENTICATE
+              </NavLink>
+            </li>
+          )
+          : (
+            <li>
+              <Button
+                inverse
+                onClick={ auth.logout }
+              >
+                LOGOUT
+              </Button>
+            </li>
+          )
+      }
+    </List>
+  )
+}
 
 export default Links

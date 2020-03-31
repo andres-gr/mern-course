@@ -1,5 +1,9 @@
 import { hot } from 'react-hot-loader/root'
-import React, { FC } from 'react'
+import React, {
+  FC,
+  useCallback,
+  useState,
+} from 'react'
 import {
   BrowserRouter,
   Redirect,
@@ -12,11 +16,46 @@ import Users from 'Pages/Users'
 import Places from 'Pages/Places'
 import NewPlace from 'Pages/Places/NewPlace'
 import UpdatePlace from 'Pages/Places/UpdatePlace'
+import Auth from 'Pages/Auth'
+import AuthContext from 'Api/context/auth'
 
-const App: FC = () => (
-  <BrowserRouter>
-    <Navbar />
-    <Main>
+const { Provider } = AuthContext
+
+const App: FC = () => {
+  const [
+    isLogin,
+    setIsLogin,
+  ] = useState(false)
+
+  const login = useCallback(() => setIsLogin(true), [])
+
+  const logout = useCallback(() => setIsLogin(false), [])
+
+  const routes = !isLogin
+    ? (
+      <Switch>
+        <Route
+          exact
+          path="/"
+        >
+          <Users />
+        </Route>
+        <Route
+          exact
+          path="/:userId/places"
+        >
+          <Places />
+        </Route>
+        <Route
+          exact
+          path="/auth"
+        >
+          <Auth />
+        </Route>
+        <Redirect to="/auth" />
+      </Switch>
+    )
+    : (
       <Switch>
         <Route
           exact
@@ -44,8 +83,26 @@ const App: FC = () => (
         </Route>
         <Redirect to="/" />
       </Switch>
-    </Main>
-  </BrowserRouter>
-)
+    )
+
+  return (
+    <BrowserRouter>
+      <Provider
+        value={
+          {
+            isLogin,
+            login,
+            logout,
+          }
+        }
+      >
+        <Navbar />
+        <Main>
+          { routes }
+        </Main>
+      </Provider>
+    </BrowserRouter>
+  )
+}
 
 export default hot(App)

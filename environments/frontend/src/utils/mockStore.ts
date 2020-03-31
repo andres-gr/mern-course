@@ -15,7 +15,7 @@ const PLACES: Place[] = [
       lng : -73.9973887,
     },
     title  : 'Times Square',
-    userId : 'user_1',
+    userId : 'user_3',
   },
   {
     address     : 'Manhattan, NY 10036, United States',

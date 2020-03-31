@@ -3,7 +3,8 @@ import { ReducerAction } from 'Utils/types'
 import { SubmitProps } from 'Components/Input'
 
 enum FormTypes {
-  CHANGE = 'CHANGE'
+  CHANGE = 'CHANGE',
+  UPDATE = 'UPDATE'
 }
 
 export interface FormState {
@@ -21,13 +22,13 @@ const formState: FormState = {
   isValid : false,
 }
 
-const formReducer: Reducer<FormState, ReducerAction<FormTypes, SubmitProps>> = (state, {
+const formReducer: Reducer<FormState, ReducerAction<FormTypes, Partial<SubmitProps & FormState>>> = (state, {
   payload,
   type,
 }) => {
   switch (type) {
     case FormTypes.CHANGE: {
-      if (payload) {
+      if (payload?.id && typeof payload?.isValid === 'boolean' && typeof payload?.value === 'string') {
         const {
           id,
           isValid,
@@ -53,9 +54,20 @@ const formReducer: Reducer<FormState, ReducerAction<FormTypes, SubmitProps>> = (
           isValid: !formIsValid,
         }
       }
-      return {
-        ...state,
+      return state
+    }
+    case FormTypes.UPDATE: {
+      if (payload?.inputs) {
+        return {
+          ...state,
+          inputs: {
+            ...state.inputs,
+            ...payload.inputs,
+          },
+          isValid: !!payload.isValid,
+        }
       }
+      return state
     }
     default:
       return state

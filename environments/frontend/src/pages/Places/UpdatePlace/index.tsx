@@ -6,6 +6,7 @@ import React, {
 import { useParams } from 'react-router-dom'
 import Button from 'Components/Button'
 import Input from 'Components/Input'
+import Card from 'Components/Card'
 import useForm from 'Hooks/useForm'
 import { PLACES } from 'Utils/mockStore'
 import {
@@ -18,7 +19,7 @@ interface UpdatePlaceParams {
   placeId: string
 }
 
-const UpdatePlace: FC<{}> = () => {
+const UpdatePlace: FC = () => {
   const params = useParams<UpdatePlaceParams>()
 
   const place = useMemo(() => PLACES.find(({ id }) => id === params.placeId), [params.placeId])
@@ -51,7 +52,9 @@ const UpdatePlace: FC<{}> = () => {
   if (!place) {
     return (
       <div className="center">
-        <h2>No place found</h2>
+        <Card>
+          <h2>No place found</h2>
+        </Card>
       </div>
     )
   }
