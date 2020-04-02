@@ -1,9 +1,10 @@
 import {
+  NextFunction,
   Request,
   Response,
 } from 'express'
 import router from 'Routes/router'
-import { HttpError } from 'Utils/types'
+import HttpError from 'Utils/httpError'
 
 router.use((_req, _res, next) => {
   const error = new HttpError({
@@ -13,12 +14,15 @@ router.use((_req, _res, next) => {
   next(error)
 })
 
-router.use((err: HttpError, _req: Request, res: Response) => {
+router.use((err: HttpError, _req: Request, res: Response, next: NextFunction) => {
+  if (res.headersSent) {
+    return next(err)
+  }
   res
     .status(err.status || 500)
     .json({
       error: {
-        message: err.message,
+        message: err.message || 'An error occured on the server!',
       },
     })
     .end()

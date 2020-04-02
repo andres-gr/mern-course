@@ -13,8 +13,8 @@ servers:
     description: Testing v1 API
 
 tags:
-  - name: Users
-    description: User management
+  - name: Places
+    description: Place management
 
   - name: Projects
     description: Project management
@@ -22,16 +22,16 @@ tags:
   - name: Todos
     description: Todo management
 
-  - name: Places
-    description: Place management
+  - name: Users
+    description: User management
 
 components:
   parameters:
-    todoId:
+    paramsId:
       in: path
       name: id
       required: true
-      description: Todo ID value
+      description: Item ID value
       schema:
         type: string
 
@@ -44,42 +44,92 @@ components:
           schema:
             $ref: '#/components/schemas/TodoContent'
 
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # - - - - - - - - - - - - - - - - - - - - - schemas start - - - - - - - - - - - - - - - - - - - - - - - # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
   schemas:
     BaseResponse:
       type: string
       example: Response message
 
-    User:
+    BaseErrorResponse:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          $ref: '#/components/schemas/BaseResponse'
+        status:
+          type: integer
+
+    Place:
       type: object
       required:
         - id
         - image
-        - name
-        - places
+        - title
+        - address
+        - userId
+        - location
       properties:
         id:
           type: string
-          description: Unique ID for the user
-          example: 1023kljlasdfja0
+          description: Unique ID for the place item
+          example: 1847kjdsasdfk
         image:
           type: string
-          description: Profile image url for the user
-          example: http://image.stock.com/images/profile/1
-        name:
+          description: Image url
+          example: http://image.stock.com/images/place/1
+        title:
           type: string
-          example: John Smiff
-        places:
-          type: integer
-          description: Number of places shared
-          example: 3
+          description: Title of the place
+          example: This is the place
+        description:
+          type: string
+          description: Additional info of the place
+          example: Image meta description
+        address:
+          type: string
+          description: Corresponding address of the location
+          example: The description info of the image
+        userId:
+          type: string
+          description: ID of the user that created the place
+          example: 1023kljlasdfja0
+        location:
+          type: object
+          description: Object containing the coordinates of the place
+          required:
+            - lat
+            - lng
+          properties:
+            lat:
+              type: number
+              description: Latitude of the place
+              example: -21.0309383
+            lng:
+              type: number
+              description: Longitude of the place
+              example: 23.0182198
 
-    GetUserResponse:
+    GetPlacesResponse:
       type: object
       properties:
         message:
           $ref: '#/components/schemas/BaseResponse'
-        user:
-          $ref: '#/components/schemas/User'
+        places:
+          type: array
+          items:
+            $ref: '#/components/schemas/Place'
+
+    GetPlaceResponse:
+      type: object
+      properties:
+        message:
+          $ref: '#/components/schemas/BaseResponse'
+        place:
+          $ref: '#/components/schemas/Place'
 
     Project:
       type: object
@@ -160,70 +210,105 @@ components:
         todo:
           $ref: '#/components/schemas/Todo'
 
-    Place:
+    User:
       type: object
       required:
         - id
         - image
-        - title
-        - address
-        - userId
-        - location
+        - name
+        - places
       properties:
         id:
           type: string
-          description: Unique ID for the place item
-          example: 1847kjdsasdfk
+          description: Unique ID for the user
+          example: 1023kljlasdfja0
         image:
           type: string
-          description: Image url
-          example: http://image.stock.com/images/place/1
-        title:
+          description: Profile image url for the user
+          example: http://image.stock.com/images/profile/1
+        name:
           type: string
-          description: Title of the place
-          example: This is the place
-        description:
-          type: string
-          description: Additional info of the place
-          example: Image meta description
-        address:
-          type: string
-          description: Corresponding address of the location
-          example: The description info of the image
-        userId:
-          type: string
-          description: ID of the user that created the place
-          example: 1023kljlasdfja0
-        location:
-          type: object
-          description: Object containing the coordinates of the place
-          required:
-            - lat
-            - lng
-          properties:
-            lat:
-              type: number
-              description: Latitude of the place
-              example: -21.0309383
-            lng:
-              type: number
-              description: Longitude of the place
-              example: 23.0182198
+          example: John Smiff
+        places:
+          type: integer
+          description: Number of places shared
+          example: 3
+
+    GetUserResponse:
+      type: object
+      properties:
+        message:
+          $ref: '#/components/schemas/BaseResponse'
+        user:
+          $ref: '#/components/schemas/User'
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # - - - - - - - - - - - - - - - - - - - - - schemas end - - - - - - - - - - - - - - - - - - - - - - - - # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # - - - - - - - - - - - - - - - - - - - - - paths start - - - - - - - - - - - - - - - - - - - - - - - - # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 paths:
-  /user:
+  /places:
     get:
-      description: Get a random user info
-      summary: Get a random user info
+      description: Get all places
+      summary: Get all places
       tags:
-        - Users
+        - Places
       responses:
         200:
-          description: A random user object
+          description: Retrieved all places successfully
           content: 
             application/json:
               schema:
-                $ref: '#/components/schemas/GetUserResponse'
+                $ref: '#/components/schemas/GetPlacesResponse'
+
+  /places/{id}:
+    parameters:
+      - $ref: '#/components/parameters/paramsId'
+    get:
+      description: Get a single place
+      summary: Get a single place
+      tags:
+        - Places
+      responses:
+        200:
+          description: Retrieve a single place successfully
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPlaceResponse'
+        404:
+          description: No place found
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseErrorResponse'
+
+  /places/user/{id}:
+    parameters:
+      - $ref: '#/components/parameters/paramsId'
+    get:
+      description: Get all places of user
+      summary: Get all places of user
+      tags:
+        - Places
+      responses:
+        200:
+          description: Retrieve all places of a user successfully
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPlacesResponse'
+        404:
+          description: No places found
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseErrorResponse'
 
   /project:
     get:
@@ -269,7 +354,7 @@ paths:
 
   /todos/{id}:
     parameters:
-      - $ref: '#/components/parameters/todoId'
+      - $ref: '#/components/parameters/paramsId'
     patch:
       description: Update todo with selected ID
       summary: Update todo with selected ID
@@ -296,3 +381,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DeleteTodoResponse'
+
+  /user:
+    get:
+      description: Get a random user info
+      summary: Get a random user info
+      tags:
+        - Users
+      responses:
+        200:
+          description: A random user object
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetUserResponse'
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # - - - - - - - - - - - - - - - - - - - - - paths end - - - - - - - - - - - - - - - - - - - - - - - - - # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
