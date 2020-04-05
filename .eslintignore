@@ -16,4 +16,4 @@ global.d.ts
 postinstall
 
 # generated
-api-*
+api-*/

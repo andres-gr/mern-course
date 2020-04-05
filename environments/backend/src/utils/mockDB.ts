@@ -2,6 +2,7 @@ import faker from 'faker'
 import {
   Place,
   User,
+  UserPasswords,
 } from 'Api/models'
 
 const PLACES: Place[] = [
@@ -21,6 +22,7 @@ const PLACES: Place[] = [
 
 const USERS: User[] = [
   {
+    email  : faker.internet.email(),
     id     : 'user_id_1',
     image  : faker.image.avatar(),
     name   : faker.name.findName(),
@@ -28,7 +30,10 @@ const USERS: User[] = [
   },
 ]
 
+const USER_PASSWORDS: UserPasswords = {}
+
 export {
   PLACES,
+  USER_PASSWORDS,
   USERS,
 }

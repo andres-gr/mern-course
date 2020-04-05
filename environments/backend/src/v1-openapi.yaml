@@ -26,6 +26,21 @@ tags:
     description: User management
 
 components:
+  responses:
+    NoItemFound:
+      description: No item/s found for given ID
+      content: 
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BaseErrorResponse'
+
+    UnprocessableEntity:
+      description: Incorrect or missing values
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BaseErrorResponse'
+
   parameters:
     paramsId:
       in: path
@@ -35,7 +50,19 @@ components:
       schema:
         type: string
 
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # - - - - - - - - - - - - - - - - - - - - - bodies start - - - - - - - - - - - - - - - - - - - - - - - # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
   requestBodies:
+    PlacesBody:
+      description: New place object body
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PlaceBody'
+
     TodoBody:
       description: Todo text content
       required: true
@@ -43,6 +70,26 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/TodoContent'
+
+    SignupBody:
+      description: Signup body
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SignupContent'
+
+    LoginBody:
+      description: Login body
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LoginContent'
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # - - - - - - - - - - - - - - - - - - - - - bodies end - - - - - - - - - - - - - - - - - - - - - - - - # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # # # - - - - - - - - - - - - - - - - - - - - - schemas start - - - - - - - - - - - - - - - - - - - - - - - # # #
@@ -58,25 +105,35 @@ components:
       required:
         - message
       properties:
+        errors:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
         message:
           $ref: '#/components/schemas/BaseResponse'
         status:
           type: integer
 
-    Place:
+    ID:
       type: object
       required:
         - id
+      properties:
+        id:
+          type: string
+          description: Unique ID for the item
+          example: 1847kjdsasdfk
+
+    PlaceBody:
+      type: object
+      required:
         - image
         - title
         - address
         - userId
         - location
       properties:
-        id:
-          type: string
-          description: Unique ID for the place item
-          example: 1847kjdsasdfk
         image:
           type: string
           description: Image url
@@ -113,6 +170,11 @@ components:
               description: Longitude of the place
               example: 23.0182198
 
+    Place:
+      allOf:
+        - $ref: '#/components/schemas/ID'
+        - $ref: '#/components/schemas/PlaceBody'
+
     GetPlacesResponse:
       type: object
       properties:
@@ -123,7 +185,31 @@ components:
           items:
             $ref: '#/components/schemas/Place'
 
+    PostPlaceResponse:
+      type: object
+      properties:
+        message:
+          $ref: '#/components/schemas/BaseResponse'
+        place:
+          $ref: '#/components/schemas/Place'
+
     GetPlaceResponse:
+      type: object
+      properties:
+        message:
+          $ref: '#/components/schemas/BaseResponse'
+        place:
+          $ref: '#/components/schemas/Place'
+
+    PatchPlaceResponse:
+      type: object
+      properties:
+        message:
+          $ref: '#/components/schemas/BaseResponse'
+        place:
+          $ref: '#/components/schemas/Place'
+
+    DeletePlaceResponse:
       type: object
       properties:
         message:
@@ -210,18 +296,18 @@ components:
         todo:
           $ref: '#/components/schemas/Todo'
 
-    User:
+    UserBody:
       type: object
       required:
-        - id
+        - email
         - image
         - name
         - places
       properties:
-        id:
+        email:
           type: string
-          description: Unique ID for the user
-          example: 1023kljlasdfja0
+          description: User email
+          example: jon@smiff.com
         image:
           type: string
           description: Profile image url for the user
@@ -234,7 +320,63 @@ components:
           description: Number of places shared
           example: 3
 
-    GetUserResponse:
+    User:
+      allOf:
+        - $ref: '#/components/schemas/ID'
+        - $ref: '#/components/schemas/UserBody'
+
+    SignupContent:
+      type: object
+      required:
+        - name
+        - email
+        - password
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+
+    LoginContent:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+
+    UserPasswords:
+      type: object
+      properties:
+        ids:
+          type: string
+      additionalProperties: true
+      description: Key value pairs of userId to hashed password
+
+    GetUsersResponse:
+      type: object
+      properties:
+        message:
+          $ref: '#/components/schemas/BaseResponse'
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+
+    SignupResponse:
+      type: object
+      properties:
+        message:
+          $ref: '#/components/schemas/BaseResponse'
+        user:
+          $ref: '#/components/schemas/User'
+
+    LoginResponse:
       type: object
       properties:
         message:
@@ -265,6 +407,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetPlacesResponse'
+    post:
+      description: Create a new place
+      summary: Create a new place
+      requestBody:
+        description: New place object body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlaceBody'
+      tags:
+        - Places
+      responses:
+        201:
+          description: Created a new place successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostPlaceResponse'
+        422:
+          $ref: '#/components/responses/UnprocessableEntity'
 
   /places/{id}:
     parameters:
@@ -282,11 +445,46 @@ paths:
               schema:
                 $ref: '#/components/schemas/GetPlaceResponse'
         404:
-          description: No place found
-          content: 
+          $ref: '#/components/responses/NoItemFound'
+
+    patch:
+      description: Update a single place
+      summary: Update a single place
+      tags:
+        - Places
+      requestBody:
+        description: Update place object body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlaceBody'
+      responses:
+        200:
+          description: Updated a single place successfully
+          content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BaseErrorResponse'
+                $ref: '#/components/schemas/PatchPlaceResponse'
+        404:
+          $ref: '#/components/responses/NoItemFound'
+        422:
+          $ref: '#/components/responses/UnprocessableEntity'
+
+    delete:
+      description: Delete a single place
+      summary: Delete a single place
+      tags:
+        - Places
+      responses:
+        200:
+          description: Deleted a single place successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeletePlaceResponse'
+        404:
+          $ref: '#/components/responses/NoItemFound'
 
   /places/user/{id}:
     parameters:
@@ -304,11 +502,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/GetPlacesResponse'
         404:
-          description: No places found
-          content: 
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BaseErrorResponse'
+          $ref: '#/components/responses/NoItemFound'
 
   /project:
     get:
@@ -382,19 +576,65 @@ paths:
               schema:
                 $ref: '#/components/schemas/DeleteTodoResponse'
 
-  /user:
+  /users:
     get:
-      description: Get a random user info
-      summary: Get a random user info
+      description: Get list of users
+      summary: Get list of users
       tags:
         - Users
       responses:
         200:
-          description: A random user object
+          description: Retrieved list of users successfully
           content: 
             application/json:
               schema:
-                $ref: '#/components/schemas/GetUserResponse'
+                $ref: '#/components/schemas/GetUsersResponse'
+
+  /signup:
+    post:
+      description: Send a signup request
+      summary: Send a signup request
+      tags:
+        - Users
+      requestBody:
+        $ref: '#/components/requestBodies/SignupBody'
+      responses:
+        201:
+          description: Signup was successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignupResponse'
+        403:
+          description: Email already in use
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseErrorResponse'
+        422:
+          $ref: '#/components/responses/UnprocessableEntity'
+
+  /login:
+    post:
+      description: Send a login request
+      summary: Send a login request
+      tags:
+        - Users
+      requestBody:
+        $ref: '#/components/requestBodies/LoginBody'
+      responses:
+        200:
+          description: Login was successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        401:
+          description: Credentials incorrect
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseErrorResponse'
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # # # - - - - - - - - - - - - - - - - - - - - - paths end - - - - - - - - - - - - - - - - - - - - - - - - - # # #

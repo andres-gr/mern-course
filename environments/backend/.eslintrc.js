@@ -4,6 +4,7 @@ const tsPath = path.resolve(__dirname, 'tsconfig.json');
 const srcPath = path.resolve(__dirname, 'src');
 
 module.exports = {
+  "root": true,
   "env": {
     "node": true
   },
@@ -15,6 +16,17 @@ module.exports = {
     "plugin:import/errors",
     "plugin:import/warnings",
     "plugin:import/typescript"
+  ],
+  "overrides": [
+    {
+      "files": ["*.ts"],
+      "rules": {
+        "import/default": "off",
+        "import/named": "off",
+        "import/namespace": "off",
+        "import/no-named-as-default-member": "off"
+      }
+    }
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {

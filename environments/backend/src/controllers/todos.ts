@@ -1,7 +1,3 @@
-import {
-  RequestHandler,
-  Response,
-} from 'express'
 import uniqueId from 'lodash/uniqueId'
 import {
   TodosIdDeleteRequest,
@@ -15,11 +11,11 @@ import {
   Todo,
   TodoContent,
 } from 'Api/models'
-import { ApiParams } from 'Utils/types'
+import { ReqHandler } from 'Utils/types'
 
 const TODOS: Todo[] = []
 
-const createTodo: RequestHandler = (req, res: Response<PostTodoResponse>) => {
+const createTodo: ReqHandler<never, PostTodoResponse> = (req, res) => {
   const body = req.body as { text: string }
   const newTodo: Todo = {
     id   : uniqueId('todo_id_'),
@@ -37,7 +33,7 @@ const createTodo: RequestHandler = (req, res: Response<PostTodoResponse>) => {
     .end()
 }
 
-const getTodos: RequestHandler = (_req, res: Response<GetTodosResponse>) => {
+const getTodos: ReqHandler<never, GetTodosResponse> = (_req, res) => {
   res
     .status(200)
     .json({
@@ -47,7 +43,7 @@ const getTodos: RequestHandler = (_req, res: Response<GetTodosResponse>) => {
     .end()
 }
 
-const updateTodo: RequestHandler<ApiParams<TodosIdPatchRequest>> = (req, res: Response<PatchTodoResponse>) => {
+const updateTodo: ReqHandler<TodosIdPatchRequest, PatchTodoResponse> = (req, res) => {
   const {
     params: { id: todoId },
   } = req
@@ -69,7 +65,7 @@ const updateTodo: RequestHandler<ApiParams<TodosIdPatchRequest>> = (req, res: Re
   }
 }
 
-const deleteTodo: RequestHandler<ApiParams<TodosIdDeleteRequest>> = (req, res: Response<DeleteTodoResponse>) => {
+const deleteTodo: ReqHandler<TodosIdDeleteRequest, DeleteTodoResponse> = (req, res) => {
   const {
     params: { id: todoId },
   } = req

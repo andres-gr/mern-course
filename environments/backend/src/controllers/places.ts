@@ -1,22 +1,26 @@
+import { validationResult } from 'express-validator'
+import faker from 'faker'
 import {
-  RequestHandler,
-  Response,
-} from 'express'
-import {
+  PlacesIdDeleteRequest,
   PlacesIdGetRequest,
+  PlacesIdPatchRequest,
   PlacesUserIdGetRequest,
 } from 'Api/apis'
 import {
   BaseErrorResponse,
+  DeletePlaceResponse,
   GetPlaceResponse,
   GetPlacesResponse,
+  PatchPlaceResponse,
   Place,
+  PlaceBody,
+  PostPlaceResponse,
 } from 'Api/models'
 import { PLACES } from 'Utils/mockDB'
-import { ApiParams } from 'Utils/types'
+import { ReqHandler } from 'Utils/types'
 import HttpError from 'Utils/httpError'
 
-const getPlaces: RequestHandler = async (_req, res: Response<GetPlacesResponse>) => {
+const getPlaces: ReqHandler<never, GetPlacesResponse> = async (_req, res) => {
   const places = await new Promise<Place[]>(resolve => {
     setTimeout(() => {
       resolve(PLACES)
@@ -31,7 +35,7 @@ const getPlaces: RequestHandler = async (_req, res: Response<GetPlacesResponse>)
     .end()
 }
 
-const getPlace: RequestHandler<ApiParams<PlacesIdGetRequest>> = async (req, res: Response<GetPlaceResponse | BaseErrorResponse>, next) => {
+const getPlace: ReqHandler<PlacesIdGetRequest, GetPlaceResponse | BaseErrorResponse> = async (req, res, next) => {
   const {
     id: placeId,
   } = req.params
@@ -56,7 +60,7 @@ const getPlace: RequestHandler<ApiParams<PlacesIdGetRequest>> = async (req, res:
     .end()
 }
 
-const getUserPlaces: RequestHandler<ApiParams<PlacesUserIdGetRequest>> = async (req, res: Response<GetPlacesResponse | BaseErrorResponse>, next) => {
+const getUserPlaces: ReqHandler<PlacesUserIdGetRequest, GetPlacesResponse | BaseErrorResponse> = async (req, res, next) => {
   const {
     id: uId,
   } = req.params
@@ -81,8 +85,110 @@ const getUserPlaces: RequestHandler<ApiParams<PlacesUserIdGetRequest>> = async (
     .end()
 }
 
+const createPlace: ReqHandler<never, PostPlaceResponse, PlaceBody> = async (req, res, next) => {
+  const results = validationResult(req)
+  if (!results.isEmpty()) {
+    return next(new HttpError({
+      errors  : results.array(),
+      message : 'Incorrect or missing values',
+      status  : 422,
+    }))
+  }
+  const place = await new Promise<Place>(resolve => {
+    setTimeout(() => {
+      const result = {
+        ...req.body,
+        id: faker.random.uuid(),
+      }
+      PLACES.push(result)
+      resolve(result)
+    }, 1000)
+  })
+  res
+    .status(201)
+    .json({
+      message: 'New place created',
+      place,
+    })
+    .end()
+}
+
+const updatePlace: ReqHandler<PlacesIdPatchRequest, PatchPlaceResponse, PlaceBody> = async (req, res, next) => {
+  const results = validationResult(req)
+  if (!results.isEmpty()) {
+    return next(new HttpError({
+      errors  : results.array(),
+      message : 'Incorrect or missing values',
+      status  : 422,
+    }))
+  }
+  const {
+    params: {
+      id: placeId,
+    },
+  } = req
+  const currentPlace = await new Promise<Place>(resolve => {
+    setTimeout(() => {
+      const result = PLACES.find(({ id }) => id === placeId)
+      resolve(result)
+    }, 1000)
+  })
+  if (!currentPlace) {
+    return next(new HttpError({
+      message : 'No place found for given ID.',
+      status  : 404,
+    }))
+  }
+  const place = {
+    ...currentPlace,
+    ...req.body,
+    id: placeId,
+  }
+  const index = PLACES.findIndex(({ id }) => id === placeId)
+  PLACES.splice(index, 1, place)
+  res
+    .status(200)
+    .json({
+      message: 'Updated place',
+      place,
+    })
+    .end()
+}
+
+const deletePlace: ReqHandler<PlacesIdDeleteRequest, DeletePlaceResponse> = async (req, res, next) => {
+  const {
+    params:{
+      id: placeId,
+    },
+  } = req
+  const place = await new Promise<Place>(resolve => {
+    setTimeout(() => {
+      const result = PLACES.find(({ id }) => id === placeId)
+      resolve(result)
+    }, 1000)
+  })
+  if (!place) {
+    return next(new HttpError({
+      message : 'No place found for given ID.',
+      status  : 404,
+    }))
+  }
+  const index = PLACES.findIndex(({ id }) => id === placeId)
+  PLACES.splice(index, 1)
+  res
+    .status(200)
+    .json({
+      message: 'Place deleted',
+      place,
+    })
+    .end()
+}
+
 export {
+  createPlace,
+  deletePlace,
   getPlace,
   getPlaces,
   getUserPlaces,
+  updatePlace,
 }

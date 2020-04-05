@@ -4,6 +4,7 @@ const tsPath = path.resolve(__dirname, 'tsconfig.json');
 const srcPath = path.resolve(__dirname, 'src');
 
 module.exports = {
+  "root": true,
   "env": {
     "browser": true
   },
@@ -22,9 +23,22 @@ module.exports = {
   },
   "overrides": [
     {
-      "files": ["**/*.tsx"],
+      "files": ["*.tsx"],
       "rules": {
+        "import/default": "off",
+        "import/named": "off",
+        "import/namespace": "off",
+        "import/no-named-as-default-member": "off",
         "react/prop-types": "off"
+      }
+    },
+    {
+      "files": ["*.ts", "*.tsx"],
+      "rules": {
+        "import/default": "off",
+        "import/named": "off",
+        "import/namespace": "off",
+        "import/no-named-as-default-member": "off"
       }
     }
   ],

@@ -7,6 +7,8 @@ files=$(find $PWD/src/api-v1 -name '*.ts' -type f)
 for file in $files; do
   perl -pi -e 'print "/* eslint-disable */\n" if $. == 1' $file
   perl -pi -e 'print "// \@ts-nocheck\n" if $. == 1' $file
+  perl -pi -e 's/&amp;/&/g;' $file
+  perl -pi -e 's/(object \| any)/string/g;' $file
 done
 
 echo "Done!"

@@ -1,15 +1,12 @@
 /* eslint-disable import/prefer-default-export */
-import {
-  RequestHandler,
-  Response,
-} from 'express'
 import faker from 'faker'
 import {
   GetProjectResponse,
   Project,
 } from 'Api/models'
+import { ReqHandler } from 'Utils/types'
 
-const getProject: RequestHandler = async (_req, res: Response<GetProjectResponse>) => {
+const getProject: ReqHandler<never, GetProjectResponse> = async (_req, res) => {
   const project = await new Promise<Project>(resolve => {
     setTimeout(() => {
       resolve({
