@@ -14,11 +14,13 @@ import {
   PatchPlaceResponse,
   Place,
   PlaceBody,
+  PlaceBodyLocation,
   PostPlaceResponse,
 } from 'Api/models'
 import { PLACES } from 'Utils/mockDB'
 import { ReqHandler } from 'Utils/types'
 import HttpError from 'Utils/httpError'
+import getCoords from 'Utils/location'
 
 const getPlaces: ReqHandler<never, GetPlacesResponse> = async (_req, res) => {
   const places = await new Promise<Place[]>(resolve => {
@@ -94,11 +96,18 @@ const createPlace: ReqHandler<never, PostPlaceResponse, PlaceBody> = async (req,
       status  : 422,
     }))
   }
+  let location: PlaceBodyLocation
+  try {
+    location = await getCoords(req.body.address)
+  } catch (e) {
+    return next(e)
+  }
   const place = await new Promise<Place>(resolve => {
     setTimeout(() => {
       const result = {
         ...req.body,
         id: faker.random.uuid(),
+        location,
       }
       PLACES.push(result)
       resolve(result)

@@ -5,7 +5,7 @@ import express from 'express'
 import path from 'path'
 import router from 'Routes/router'
 
-const PORT = process.env.PORT!
+const PORT = process.env.PORT
 const isProd = process.env.NODE_ENV === 'production'
 
 const app = express()

@@ -132,7 +132,6 @@ components:
         - title
         - address
         - userId
-        - location
       properties:
         image:
           type: string
@@ -353,7 +352,7 @@ components:
     UserPasswords:
       type: object
       properties:
-        ids:
+        userId:
           type: string
       additionalProperties: true
       description: Key value pairs of userId to hashed password
@@ -411,12 +410,7 @@ paths:
       description: Create a new place
       summary: Create a new place
       requestBody:
-        description: New place object body
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PlaceBody'
+        $ref: '#/components/requestBodies/PlacesBody'
       tags:
         - Places
       responses:
@@ -446,7 +440,6 @@ paths:
                 $ref: '#/components/schemas/GetPlaceResponse'
         404:
           $ref: '#/components/responses/NoItemFound'
-
     patch:
       description: Update a single place
       summary: Update a single place
@@ -470,7 +463,6 @@ paths:
           $ref: '#/components/responses/NoItemFound'
         422:
           $ref: '#/components/responses/UnprocessableEntity'
-
     delete:
       description: Delete a single place
       summary: Delete a single place
